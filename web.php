@@ -8,8 +8,11 @@ if (isset($_POST['url'])) {
 	$error = []; // Default no error
 
 	$url = trim((string) $_POST['url']);
-	if ($code = $db->findCodeByUrl($url))
+	if ($code = $db->findCodeByUrl($url)) {
 		$error[] = "Already Exists."; // Prevent re-create
+		header("Location: /$code/show");
+		exit;
+	}
 	if (strlen($url) > 1024)
 		$error[] = "URL Too Long.";
 
@@ -80,6 +83,10 @@ if (isset($_POST['url'])) {
 		$result = $db->insertCode($code, $url, $author);
 		if ($result[0] !== '00000')
 			$error[] = $result[2];
+		else {
+			header("Location: /$code/show");
+			exit;
+		}
 	}
 } ?>
 <!DOCTYPE html>
